@@ -1,2 +1,3 @@
 import { preload } from './lib/preload';
-export { preload };
+import Demo from './lib/demo/index.jsx';
+export { preload, Demo };
