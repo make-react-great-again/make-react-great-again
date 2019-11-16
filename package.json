@@ -1,10 +1,10 @@
 {
   "name": "make-react-great-again",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "author": "yangdepp",
+  "author": "yangdepp, yx675258207",
   "license": "MIT",
-  "repository": "yangdepp/make-react-great-again",
+  "repository": "make-react-great-again/make-react-great-again",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
