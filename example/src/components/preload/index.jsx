@@ -1,18 +1,23 @@
-import { preload } from 'make-react-great-again';
-import React, { Component } from 'react';
+import { page } from "make-react-great-again";
+import React, { Component } from "react";
+import axios from "axios";
 
-const getNumber = (props) => {
-  const { normalProps } = props;
-  return normalProps + 1000;
+const getList = (props) => axios.get("/mock/list.json").then(data => data);
+const getOrder = axios.get("/mock/order.json").then(data => data);
+const test = async function test(props) {
+  const result = await axios.get("/mock/list.json");
+  return result;
 };
 
-@preload({
-  title: 'test title',
-  form: true,
-  style: require('./style.scss'),
-  preload: (props) => ({
-    resultData: getNumber(props),
-  }),
+@page({
+  preload: props => ({
+    listData: getList(props),
+    orderData: getOrder,
+    test: test(props)
+  })
+  // preload: {
+  //   on: test()
+  // }
 })
 class Demo extends Component {
   render() {

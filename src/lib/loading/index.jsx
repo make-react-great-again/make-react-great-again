@@ -1,21 +1,13 @@
 import React, { Component } from "react";
-import LoadingIcon from "../icons/loading.svg";
-console.log(LoadingIcon)
+import './style.scss';
 
 class Loading extends Component {
   render() {
     return (
-      <div>
-        <svg
-          style={{
-            width: "1.2em",
-            height: "1.2em",
-            display: "inline-block",
-            fill: "currentColor"
-          }}
-        >
-          <use xlinkHref={`#${LoadingIcon}`} />
-        </svg>
+      <div className="loading-wrapper">
+        <div className="loading-text_wrapper">
+          <div className="loading-text">Loading...</div>
+        </div>
       </div>
     );
   }
