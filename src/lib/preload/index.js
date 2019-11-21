@@ -93,7 +93,9 @@ const preload = (
           });
         }
       }
-      componentWillUnmount() {}
+      componentWillUnmount() {
+        clearTimeout(this.timeId);
+      }
       render() {
         return this.state.isReady ? (
           <Component {...this.props} {...this.state.data} />
