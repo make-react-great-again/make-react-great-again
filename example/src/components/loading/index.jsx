@@ -5,7 +5,7 @@ class Loading extends Component {
   render() {
     return (
       <div className="loading-wrapper">
-        <div className="loading-text">Loading...</div>
+        <div className="loading-text">loading......</div>
       </div>
     );
   }

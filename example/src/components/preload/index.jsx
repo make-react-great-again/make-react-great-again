@@ -1,33 +1,39 @@
 import { page } from "make-react-great-again";
 import React, { Component } from "react";
 import axios from "axios";
+import LoadingComponent from "../loading/index.jsx";
 
-const getList = (props) => axios.get("/mock/list.json").then(data => data);
-const getOrder = axios.get("/mock/order.json").then(data => data);
+const getList = props => axios.get("/mock/list.json").then(data => data.data);
+const getOrder = axios.get("/mock/order.json").then(data => undefined);
 const test = async function test(props) {
-  const result = await axios.get("/mock/list.json");
-  return result;
+  const result1 = await axios.get("/mock/list.json");
+  const result = await axios.get(
+    `/mock/order.json?name=${result1.data[0].name}`
+  );
+  return result.data;
 };
 
 @page({
   preload: props => ({
     listData: getList(props),
     orderData: getOrder,
-    test: test(props)
-  })
+    testAsyncFunction: test(props),
+    testNormalFunction: props => {
+      return props.test + 1;
+    },
+    testNoFunction: props.test + 2,
+    testFalsy: undefined
+  }),
   // preload: {
   //   on: test()
-  // }
+  // },
+  preloadMinLoadTime: 1000,
+  preloadLoadComponent: <LoadingComponent />
 })
 class Demo extends Component {
   render() {
-    const { resultData } = this.props;
-    return (
-      <div>
-        hello world
-        <div className="abc">{resultData}</div>
-      </div>
-    );
+    console.log("props", this.props);
+    return <div>hello world</div>;
   }
 }
 export default Demo;
