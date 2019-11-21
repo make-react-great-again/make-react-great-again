@@ -52,7 +52,9 @@ const preload = (
                 if (Util.isFunction(temp)) {
                   return Promise.resolve(temp(props));
                 }
-                return Promise.resolve(temp).catch(() => {console.warn(`预加载数据${key}出错了`)});
+                return Promise.resolve(temp).catch(error => {
+                  console.error(`预加载数据${key}出错了,${error}`);
+                });
               })
             )
               .then(datas => {
