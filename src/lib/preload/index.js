@@ -6,7 +6,11 @@ import Util from "../util";
  * target 是一个函数 | 对象
  * return 一个对象，这个对象的每个value是promise
  */
-const preload = (target, loadingComponent = <TransitionComponent />, minLoadTime = 0) => {
+const preload = (
+  target,
+  loadingComponent = <TransitionComponent />,
+  minLoadTime = 0
+) => {
   return Component => {
     return class EnhancedComponent extends React.Component {
       constructor(props) {
@@ -45,10 +49,10 @@ const preload = (target, loadingComponent = <TransitionComponent />, minLoadTime
                   console.warn(`预加载数据${key}与props冲突，会覆盖props数据`);
                 }
                 let temp = target[key];
-                if(Util.isFunction(temp)){
-                  return Promise.resolve(temp(props))
+                if (Util.isFunction(temp)) {
+                  return Promise.resolve(temp(props));
                 }
-                return Promise.resolve(temp)
+                return Promise.resolve(temp).catch(() => {console.warn(`预加载数据${key}出错了`)});
               })
             )
               .then(datas => {
@@ -91,7 +95,9 @@ const preload = (target, loadingComponent = <TransitionComponent />, minLoadTime
       render() {
         return this.state.isReady ? (
           <Component {...this.props} {...this.state.data} />
-        ) : (loadingComponent || <TransitionComponent />);
+        ) : (
+          loadingComponent || <TransitionComponent />
+        );
       }
     };
   };
