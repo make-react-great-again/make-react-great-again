@@ -22,7 +22,9 @@ const test = async function test(props) {
       return props.test + 1;
     },
     testNoFunction: props.test + 2,
-    testFalsy: undefined
+    testFalsy: undefined,
+    testNull: null,
+    test: 3
   }),
   // preload: {
   //   on: test()
