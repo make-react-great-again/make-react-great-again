@@ -6,7 +6,7 @@ import Util from "../util";
  * target 是一个函数 | 对象
  * return 一个对象，这个对象的每个value是promise
  */
-const preload = (target, loadingComponent, minLoadTime) => {
+const preload = (target, loadingComponent = <TransitionComponent />, minLoadTime = 0) => {
   return Component => {
     return class EnhancedComponent extends React.Component {
       constructor(props) {
@@ -19,44 +19,36 @@ const preload = (target, loadingComponent, minLoadTime) => {
       componentDidMount() {
         if (target) {
           const startTime = Date.now();
-          minLoadTime =
-            typeof minLoadTime !== "undefined" && minLoadTime !== null
-              ? minLoadTime
-              : 0;
+          minLoadTime = +minLoadTime || 0;
           new Promise(resolve => {
             if (Util.isObject(target)) {
               resolve({
                 ...target
               });
-            } else {
+            } else if (Util.isFunction(target)) {
               // todo 是都需要再套一层Promise.resolve
               // Promise.resolve().then(() => {
               resolve({
                 // 把组件接收的props当做preload的参数
                 ...target(this.props)
               });
+            } else {
+              throw new Error("preload 需为一个object或function");
             }
           }).then(target => {
             const props = this.props;
             const __indexName__ = {};
-            let i = 0,
-              temp = null;
             Promise.all(
-              Object.keys(target).map(key => {
+              Object.keys(target).map((key, i) => {
                 __indexName__[i] = key;
                 if (props[key]) {
                   console.warn(`预加载数据${key}与props冲突，会覆盖props数据`);
                 }
-                temp = target[key];
-                i++;
-                // todo 判断Promise的方法是否完整
-                if (temp instanceof Promise) {
-                  return temp;
-                } else {
-                  temp = Util.isFunction(temp) ? temp(props) : temp;
-                  // todo 如果value是一个falsy值，是否需要Promise.reject(temp)
-                  return temp ? Promise.resolve(temp) : temp;
+                let temp = target[key];
+                if(Util.isFunction(temp)){
+                  return Promise.resolve(temp(props))
                 }
+                return Promise.resolve(temp)
               })
             )
               .then(datas => {
@@ -99,11 +91,7 @@ const preload = (target, loadingComponent, minLoadTime) => {
       render() {
         return this.state.isReady ? (
           <Component {...this.props} {...this.state.data} />
-        ) : loadingComponent ? (
-          loadingComponent
-        ) : (
-          <TransitionComponent />
-        );
+        ) : (loadingComponent || <TransitionComponent />);
       }
     };
   };
