@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import TransitionComponent from "../loading/index.jsx";
 import Util from "../util";
 
@@ -49,10 +49,9 @@ const preload = (
                   console.warn(`预加载数据${key}与props冲突，会覆盖props数据`);
                 }
                 let temp = target[key];
-                if (Util.isFunction(temp)) {
-                  return Promise.resolve(temp(props));
-                }
-                return Promise.resolve(temp).catch(error => {
+                return Promise.resolve(
+                  Util.isFunction(temp) ? temp(props) : temp
+                ).catch(error => {
                   console.error(`预加载数据${key}出错了,${error}`);
                 });
               })

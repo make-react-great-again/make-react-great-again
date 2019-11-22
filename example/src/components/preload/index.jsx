@@ -24,7 +24,15 @@ const test = async function test(props) {
     testNoFunction: props.test + 2,
     testFalsy: undefined,
     testNull: null,
-    test: 3
+    test: 3,
+    testFnReject: () => {
+      return Promise.reject('testFnReject')
+    },
+    testReject: Promise.reject('testReject'),
+    testFnResolve: () => {
+      return Promise.resolve('testFnResolve')
+    },
+    testResolve: Promise.resolve('testResolve')
   }),
   // preload: {
   //   on: test()
