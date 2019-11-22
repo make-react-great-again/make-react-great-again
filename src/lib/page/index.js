@@ -1,4 +1,5 @@
 import preload from "../preload";
+import title from "../title";
 
 export default (options = {}) => {
   return Component => {
@@ -8,6 +9,9 @@ export default (options = {}) => {
         options.preloadLoadComponent,
         options.preloadMinLoadTime
       )(Component);
+    }
+    if (options.title) {
+      Component = title(options.title)(Component);
     }
     return Component;
   };
