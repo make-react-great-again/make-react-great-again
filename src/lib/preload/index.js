@@ -57,6 +57,7 @@ const preload = (
               })
             )
               .then(datas => {
+                if (this.isDestory) return;
                 const data = {};
                 datas.forEach((item, index) => {
                   data[__indexName__[index]] = item;
@@ -69,6 +70,7 @@ const preload = (
                     isReady: true
                   });
                 } else {
+                  console.log("this.timeId初始化");
                   this.timeId = setTimeout(
                     () =>
                       this.setState({
@@ -94,6 +96,7 @@ const preload = (
       }
       componentWillUnmount() {
         clearTimeout(this.timeId);
+        this.isDestory = true;
       }
       render() {
         return this.state.isReady ? (

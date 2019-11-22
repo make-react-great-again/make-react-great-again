@@ -25,14 +25,12 @@ const test = async function test(props) {
     testFalsy: undefined,
     testNull: null,
     test: 3,
-    testFnReject: () => {
-      return Promise.reject('testFnReject')
-    },
+    testFnReject: () => Promise.reject('testFnReject'),
     testReject: Promise.reject('testReject'),
-    testFnResolve: () => {
-      return Promise.resolve('testFnResolve')
-    },
-    testResolve: Promise.resolve('testResolve')
+    testFnResolve: () => Promise.resolve('testFnResolve'),
+    testResolve: Promise.resolve('testResolve'),
+    testLongTimeResolve: new Promise(r => setTimeout(() => r('testLongTimeResolve'), 2000)),
+    testFnLongTimeResolve: () => new Promise(r => setTimeout(() => r('testFnLongTimeResolve'), 2000))
   }),
   // preload: {
   //   on: test()
