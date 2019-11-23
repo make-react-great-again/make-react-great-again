@@ -13,6 +13,7 @@ export default (options = {}) => {
     }
     if (options.title) {
       Component = title(options.title)(Component);
+    }
     if (options.style) {
       Component = style(options.style)(Component);
     }
