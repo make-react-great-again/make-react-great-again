@@ -1,58 +1,47 @@
 # make react/antd great ~~again~~
 
->
-
-[![NPM](https://img.shields.io/npm/v/make-react-great-again.svg)](https://www.npmjs.com/package/make-react-great-again) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-
 ## Install
 
 ```bash
 npm install --save make-react-great-again
 ```
 
-## 本项目试图对 react 和 antd 进行再封装，期望能达到以下目标
+## 本项目试图对 为`react`的`class`提供一个装饰器，进行一些页面初始化时异步请求的优化
 
-1. 使用 `HOC` 对 `react` 的 `class组件`进行装饰
-2. 装饰器分为两个：`page` & `component`, `page` 装饰器可以设置页面`title`,其他功能如下
-3. 引入`style`样式
-4. 设置`form: true`后，自动将组件用 `antd from` 包裹,可在 `props` 中拿到 `form` 的方法, 也可以在 `HOC` 中封装更多方法
-
-   ```jsx
-   Form.create({ name: 'wrapped_form_component' })(WrappedComponent);
-   ```
-
-5. 可以把组件初始时的请求从生命周期中转移到`preload`中，结果直接挂载到 `props` 上
-6. 如果用到`redux`，则设置`connect`,将 `mapStateToProps` `mapDispatchToProps` 挂载到 `props` 上
-7. 更多基于 `antd` 的 `UI` 组件封装...
+1. 使用 `HOC` 对 `react` 的 `class组件`进行装饰，提供一个@page 的装饰器
+2. 提供一个 preload 方法，可将初始化时页面所需的数据请求放入，同时提供一个 loading 状态
+3. 把组件初始时的请求从生命周期中转移到`preload`中，结果直接挂载到 `props` 上
 
 ## 使用示例
 
 ```jsx
-@hoc({
-  form: true,
-  style: require('./style.scss'),
-  // 页面初始化时预加载一些请求,结果挂载到props上
-  preload: (props) => ({
-    preloadData: getNumber(props),
-  }),
-  connect: {},
-})
-class Demo extends Component {
-  constructor(props) {
-    super(props);
-  }
+import { page } from "make-react-great-again";
+// 可以将异步数据请求的逻辑放在class外，不用写生命周期
+const getListData = props => axios.get("/mock/list.json").then(data => data);
+const getListDetailData = props => axios.get("/mock/listDetail.json").then(data => data);
 
+// 装饰器语法需要项目环境支持
+@page({
+  preload: props => {
+    listData: getListData(props),
+    listDetailData: getListDetailData(props),
+  }
+})
+class Example extends React.Component {
   render() {
-    const { preloadData } = this.props;
-    return (
-      <div>
-        <input type="text" className="text" />
-        <div>{preloadData}</div>
-      </div>
-    );
+    // 装饰后，异步请求的数据会挂载到props上
+    const { listData, listDetailData } = props;
+    console.log(listData, listDetailData);
+    return <div>...</div>;
   }
 }
 ```
+
+`注意`
+
+1. 如果`preload`中指定的 key 与父组件传过来的`props`中字段重复，则父组件传递的`props`字段`会被覆盖！！！`
+2. `preload`主要为了页面初始化时发起异步请求，请不要将常量字段写在此处，虽然可以正常挂载到`props`上，但是没必要
+3. 多个请求时，如果其中一个请求出错或者`rejected`，会返回 undefined，但不会影响其他几个请求。
 
 ## License
 

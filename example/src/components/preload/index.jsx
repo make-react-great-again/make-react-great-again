@@ -32,9 +32,6 @@ const test = async function test(props) {
     testLongTimeResolve: new Promise(r => setTimeout(() => r('testLongTimeResolve'), 2000)),
     testFnLongTimeResolve: () => new Promise(r => setTimeout(() => r('testFnLongTimeResolve'), 2000))
   }),
-  // preload: {
-  //   on: test()
-  // },
   preloadMinLoadTime: 1000,
   preloadLoadComponent: <LoadingComponent />
 })
